@@ -84,6 +84,13 @@ class TestPickVal(object):
         assert pick_val(tuple(range(10))) == 6
         assert pick_val(tuple(range(10)), 3) == 7
         assert pick_val(tuple(range(10)), 11) == 0
+        
+    # Test passing a very large index
+    def test_8(self):
+        try:
+            pick_val(range(10), 100000)
+        except:
+            pass
 
 # Test driver code
 # ================
