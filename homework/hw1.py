@@ -87,11 +87,8 @@ class TestPickVal(object):
         
     # Test passing a very large index
     def test_8(self):
-        try:
-            pick_val(range(10), 100000)
-        except:
-            pass
-
+        assert pick_val(range(10), 100000000) == 0;
+        
 # Test driver code
 # ================
 def run_tests():
@@ -103,6 +100,7 @@ def run_tests():
     tpv.test_5()
     tpv.test_6()
     tpv.test_7()
+    tpv.test_8()
     print('All tests passed.')
 
 if __name__ == '__main__':
