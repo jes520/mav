@@ -1,3 +1,6 @@
+# changes added for git testing
+
+
 # .. -*- coding: utf-8 -*-
 #
 # *********************************************************
@@ -23,9 +26,11 @@ def pick_val(
   #   index == -2 returns seq[2]. Again, if the list is less than index in
   #   length, return an earlier value.
   index=4):
+    
     # Check the length of the sequence with the asked index value
     seqlength = len(seq)
     myindex = index
+    
     # Generates a good index value if the passed value is too large.
     if abs(myindex) > seqlength:
         myindex = 0 - seqlength
