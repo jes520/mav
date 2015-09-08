@@ -35,6 +35,9 @@ def pick_val(
     value = seq[myindex]
     return value
 
+    # This code raises an error if the sequence is empty.
+    if (len(seq) == 0):
+        raise IndexError
 # Tests
 # =====
 class TestPickVal(object):
