@@ -87,7 +87,7 @@ class TestPickVal(object):
         
     # Test passing a very large index
     def test_8(self):
-        assert pick_val(range(10), 100000000) == 0;
+        assert pick_val(range(10), 100000000) == 0
         
 # Test driver code
 # ================
