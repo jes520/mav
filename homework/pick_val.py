@@ -1,10 +1,10 @@
 # .. -*- coding: utf-8 -*-
 #
-# ********************************
-# hw1.py -- Homework 1 assignment.
-# ********************************
-# This file must be named ``hw1.py``; none of the function names below are allowed
-# to change.
+# *********************************************************
+# pick_val.py -- Introductory Python programming assignment
+# *********************************************************
+# This file must be named ``pick_val.py``; none of the function names below are
+# allowed to change.
 #
 # Code skeleton
 # =============
@@ -84,11 +84,11 @@ class TestPickVal(object):
         assert pick_val(tuple(range(10))) == 6
         assert pick_val(tuple(range(10)), 3) == 7
         assert pick_val(tuple(range(10)), 11) == 0
-        
+
     # Test passing a very large index
     def test_8(self):
         assert pick_val(range(10), 100000000) == 0
-        
+
 # Test driver code
 # ================
 def run_tests():

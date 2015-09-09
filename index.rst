@@ -21,7 +21,7 @@ These serve as the starting point for homework assignments.
 .. toctree::
    :maxdepth: 2
 
-   homework/hw1.py
+   homework/pick_val.py
 
 MAV control
 -----------
