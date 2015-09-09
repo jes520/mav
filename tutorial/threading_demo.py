@@ -3,7 +3,9 @@
 # ****************************************************
 # threading.py - Threads in Python.
 # ****************************************************
-# Threads are easy to get subtly wrong.
+# Threads are easy to get subtly wrong. Shared state, such NumberFactory's
+# ``self._number`` member, allows synchronization-related bugs to plage the
+# code.
 #
 # Library imports
 # ===============
