@@ -3,6 +3,10 @@
 # ****************************************************
 # Python_tutorial.py - A brief introduction to Python.
 # ****************************************************
+# This file contains various examples from different
+# topics in Python.  Shift the triple quotes around to
+# examine different sections.
+
 """
 # Running Python
 # ==============
