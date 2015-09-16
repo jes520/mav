@@ -11,9 +11,13 @@
 #
 # Library imports
 # ===============
+# For the core code.
 from threading import Thread, Lock
+# For testing.
 from time import sleep
 from Queue import Queue
+from threading import ThreadError
+import pytest
 #
 # A simple enumerate I like, taken from one of the snippet on `stackoverflow
 # <http://stackoverflow.com/questions/36932/how-can-i-represent-an-enum-in-python>`_.
@@ -131,6 +135,31 @@ class TestMav(object):
             m.join(1.0)
             # Verify that it exited correctly -- the thread should be dead.
             assert not m.isAlive()
+
+class TestElectrode(object):
+    # Releasing an electrode not in use should raise an exception.
+    def test_1(self):
+        e = Electrode()
+        # Releasing an electrode that's unlocked should raise a ThreadError, just as `releasing a Lock <https://docs.python.org/2/library/threading.html#threading.Lock.release>`_ does. See `pytest.raises <https://pytest.org/latest/assert.html#assertions-about-expected-exceptions>`_.
+        with pytest.raises(ThreadError):
+            e.release()
+
+    # An electrode should be able to be acquired only once.
+    def test_2(self):
+        e = Electrode()
+        assert e.acquire()
+        assert not e.acquire(False)
+
+        # After releasing the lock, it should be able to be acquired again.
+        e.release()
+        assert e.acquire()
+
+    # An electrode should work with context managers.
+    def test_3(self):
+        e = Electrode()
+        with e:
+            assert not e.acquire(False)
+        assert e.acquire()
 #
 # main code
 # =========
