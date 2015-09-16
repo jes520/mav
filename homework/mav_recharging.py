@@ -69,12 +69,18 @@ class MockElectrode(object):
         self.q = Queue()
         self.is_locked = False
 
-
+    # Context manager
+    # ---------------
+    # Defining these methods allows use of the ``MockElectrode`` class in a `context manager <https://docs.python.org/2/reference/datamodel.html#context-managers>`_ (the `with <https://docs.python.org/2/reference/compound_stmts.html#with>`_ statement).
+    #
+    # To acquire a (mock) electrode, wait until the test grants permission to use this electrode by plaing a True value in its queue. See `__enter__ <https://docs.python.org/2/reference/datamodel.html#object.__enter__>`_.
     def __enter__(self):
+        # For testing purposes, show that this electrode is currently locked.
         self.is_locked = True
         assert self.q.get()
 
-    def __exit__(self, type, value, tb):
+    # When exiting the context manager, simply note that this electode isn't locked. See `__exit__ <https://docs.python.org/2/reference/datamodel.html#object.__exit__>`_.
+    def __exit__(self, exc_type, exc_value, traceback):
         self.is_locked = False
         return False
 
@@ -90,6 +96,7 @@ class TestMav(object):
         assert m._state == None
         m.start()
 
+        # Use a ``finally`` clause to guarentee that the ``m`` thread will be shut down properly.
         try:
             # Wait for the thread to start, then check that it's flying.
             sleep(0.01)
@@ -120,7 +127,10 @@ class TestMav(object):
 
         finally:
             m.running = False
-            m.join()
+            # Wait up to one second for the thread to terminate.
+            m.join(1.0)
+            # Verify that it exited correctly -- the thread should be dead.
+            assert not m.isAlive()
 #
 # main code
 # =========
