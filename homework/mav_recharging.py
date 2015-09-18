@@ -92,47 +92,51 @@ class TestMav(object):
     def test_1(self):
         e_left = MockElectrode()
         e_right = MockElectrode()
-        m = MAV(e_left, e_right, 0.05, 0.15)
+        fly_time_sec = 0.05
+        charge_time_sec = 0.15
+        thread_start_time_sec = 0.01
+        m = MAV(e_left, e_right, fly_time_sec, charge_time_sec)
         assert m._state == None
 
         # Wait to make sure the MAV isn't flying until we start it.
-        sleep(0.01)
+        sleep(thread_start_time_sec)
         assert m._state == None
         m.start()
 
         # Use a ``finally`` clause to guarentee that the ``m`` thread will be shut down properly.
         try:
             # Wait for the thread to start, then check that it's flying.
-            sleep(0.01)
+            sleep(thread_start_time_sec)
             assert m._state == _MAV_STATES.Flying
 
             # Wait for the fly time to end, then check that it's waiting.
-            sleep(0.05)
+            sleep(fly_time_sec)
             assert m._state == _MAV_STATES.Waiting
 
             # Wait a while to make sure it's waiting for an electrode.
-            sleep(0.20)
+            sleep(charge_time_sec*2)
             assert m._state == _MAV_STATES.Waiting
             e_left.q.put(True)
 
             # Wait some more to make sure it's waiting for the other electrode.
-            sleep(0.20)
+            sleep(charge_time_sec*2)
             assert m._state == _MAV_STATES.Waiting
             e_right.q.put(True)
 
             # Wait a bit to let it start charging.
-            sleep(0.01)
+            sleep(thread_start_time_sec)
             m.running = False
             assert m._state == _MAV_STATES.Charging
 
             # Wait for the charge cycle to finish. The MAV should be done.
-            sleep(0.15)
+            sleep(charge_time_sec)
             assert m._state == None
 
         finally:
+            # Tell the MAV to stop operations.
             m.running = False
-            # Wait up to one second for the thread to terminate.
-            m.join(1.0)
+            # Wait for the thread to terminate.
+            m.join(thread_start_time_sec)
             # Verify that it exited correctly -- the thread should be dead.
             assert not m.isAlive()
 
