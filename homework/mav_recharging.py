@@ -43,8 +43,12 @@ class MAV(Thread):
       left_electrode,
       # The right electrode for this MAV.
       right_electrode,
+      # .. _fly_time_sec:
+      #
       # Time spent flying on a mission, in seconds.
       fly_time_sec=0.5,
+      # .. _charge_time_sec:
+      #
       # Time spent charging, in seconds.
       charge_time_sec=1.5,
       # Any extra args.
@@ -89,24 +93,28 @@ class MockElectrode(object):
         return False
 
 class TestMav(object):
-    def test_1(self):
+    def one_mission(self,
+          # See fly_time_sec_.
+          fly_time_sec,
+          # See charge_time_sec_.
+          charge_time_sec):
+
         e_left = MockElectrode()
         e_right = MockElectrode()
-        fly_time_sec = 0.05
-        charge_time_sec = 0.15
-        thread_start_time_sec = 0.01
+        thread_switch_time_sec = 0.01
         m = MAV(e_left, e_right, fly_time_sec, charge_time_sec)
         assert m._state == None
 
         # Wait to make sure the MAV isn't flying until we start it.
-        sleep(thread_start_time_sec)
+        sleep(thread_switch_time_sec)
         assert m._state == None
         m.start()
 
-        # Use a ``finally`` clause to guarentee that the ``m`` thread will be shut down properly.
+        # Use a ``finally`` clause to guarentee that the ``m`` thread will be
+        # shut down properly.
         try:
             # Wait for the thread to start, then check that it's flying.
-            sleep(thread_start_time_sec)
+            sleep(thread_switch_time_sec)
             assert m._state == _MAV_STATES.Flying
 
             # Wait for the fly time to end, then check that it's waiting.
@@ -124,7 +132,7 @@ class TestMav(object):
             e_right.q.put(True)
 
             # Wait a bit to let it start charging.
-            sleep(thread_start_time_sec)
+            sleep(thread_switch_time_sec)
             m.running = False
             assert m._state == _MAV_STATES.Charging
 
@@ -136,9 +144,16 @@ class TestMav(object):
             # Tell the MAV to stop operations.
             m.running = False
             # Wait for the thread to terminate.
-            m.join(thread_start_time_sec)
+            m.join(thread_switch_time_sec)
             # Verify that it exited correctly -- the thread should be dead.
             assert not m.isAlive()
+
+    # Single mission tests.
+    def test_1(self):
+        self.one_mission(0.05, 0.15)
+
+    def test_2(self):
+        self.one_mission(0.10, 0.20)
 
 class TestElectrode(object):
     # Releasing an electrode not in use should raise an exception.
