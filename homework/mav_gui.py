@@ -19,6 +19,7 @@ sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
 from PyQt4.QtGui import QApplication, QDialog
+from PyQt4.QtCore import QTimer
 from PyQt4 import uic
 #
 # Implement a dialog box.
@@ -30,6 +31,15 @@ class MyDialog(QDialog):
 
         # `Load <http://pyqt.sourceforge.net/Docs/PyQt4/designer.html#PyQt4.uic.loadUi>`_ in our UI. The secord parameter lods the resulting UI directly into this class.
         uic.loadUi(join(dirname(__file__), 'mav_gui.ui'), self)
+        
+        #QTimer.singleShot(1500, self._onTimeout)
+        self._timer = QTimer(self)
+        self._timer.timeout.connect(self._onTimeout)
+        self._timer.start(1500)
+        
+        
+    def _onTimeout(self):
+        self.hsFlyTime.setValue(50)
 #
 # Main
 # ====
@@ -43,6 +53,8 @@ def main():
 
     # Main loop.
     qa.exec_()
+    
+    md._timer.stop()
 
 if __name__ == '__main__':
     main()
